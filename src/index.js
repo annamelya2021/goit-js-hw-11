@@ -1,3 +1,9 @@
+// Описан в документации
+import SimpleLightbox from 'simplelightbox';
+console.log(SimpleLightbox);
+// Дополнительный импорт стилей
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 //  <div class="photo-card">
 //   <img src="" alt="" loading="lazy" />
 //   <div class="info">
