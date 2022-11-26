@@ -12,6 +12,7 @@ refs.buttonLM.addEventListener('click', onLoadMore);
 
 let myQuery = '';
 let page = 1;
+let total = 0;
 refs.buttonLM.style.display = 'none';
 
 function fetchArticles() {
@@ -19,8 +20,18 @@ function fetchArticles() {
     `https://pixabay.com/api/?key=12397794-3c79aefa4a299d9b97accc173&q=${myQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`
   )
     .then(response => response.json())
+
     .then(data => {
-      console.log('data22', data);
+      total += data.hits.length;
+      const totalHits = data.totalHits;
+      if (total >= totalHits) {
+        Notify.info(
+          'We`re sorry, but you`ve reached the end of search results.'
+        );
+        refs.buttonLM.style.display = 'none';
+      }
+      console.log(total);
+      // console.log('data22', data);
       return data;
     });
 }
@@ -30,7 +41,7 @@ async function onSearch(e) {
   clearArticlesContainer();
   myQuery = e.currentTarget.elements.searchQuery.value;
   if (!myQuery.trim()) {
-    return alert(
+    return Notify.failure(
       'Sorry, there are no images matching your search query. Please try again'
     );
   }
@@ -40,7 +51,7 @@ async function onSearch(e) {
   refs.buttonLM.style.display = 'block';
 }
 
-function createMarkup({ hits, totalHits }) {
+function createMarkup({ hits }) {
   // console.log('hits46', hits, totalHits);
   const markup = hits
     .map(
@@ -58,16 +69,16 @@ function createMarkup({ hits, totalHits }) {
 <img  src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
  <p class="info-item">
-   <b>Likes:${likes}</b>
+   <b>Likes:<br>${likes}</b>
   </p>
   <p class="info-item">
- <b>Views:${views}</b>
+ <b>Views:<br>${views}</b>
  </p>
  <p class="info-item">
- <b>Commments:${comments}</b>
+ <b>Commments:<br>${comments}</b>
  </p>
  <p class="info-item">
- <b>Downloads:${downloads}</b>
+ <b>Downloads:<br>${downloads}</b>
 </p>
 </div>
 </a>
@@ -93,43 +104,3 @@ function onLoadMore() {
 function clearArticlesContainer() {
   refs.div.innerHTML = '';
 }
-// function createMarkup(data) {
-// console.log('in create markup ', data);
-// const markup = data.hits
-//   .map(
-//     ({
-//       webformatURL,
-//       largeImageURL,
-//       tags,
-//       likes,
-//       views,
-//       comments,
-//       downloads,
-//     }) => {
-//       return ` <div class="photo-card">
-//           // <a class ="gallery-link" href='${largeImageURL}'>
-//   <img  src="${webformatURL}" alt="${tags}" loading="lazy" />
-//   <div class="info">
-//     <p class="info-item">
-//       <b>${likes}</b>
-//     </p>
-//     <p class="info-item">
-//       <b>${views}</b>
-//     </p>
-//     <p class="info-item">
-//       <b>${comments}</b>
-//     </p>
-//     <p class="info-item">
-//       <b>${downloads}</b>
-//     </p>
-//   </div>
-// </div>
-// // </a>
-// `;
-//     }
-//   )
-//   .join('');
-// // return markup;
-// refs.div.insertAdjacentHTML('beforeend', createMarkup);
-// }
-// createMarkup();
