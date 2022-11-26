@@ -12,6 +12,7 @@ refs.buttonLM.addEventListener('click', onLoadMore);
 
 let myQuery = '';
 let page = 1;
+refs.buttonLM.style.display = 'none';
 
 function fetchArticles() {
   return fetch(
@@ -24,25 +25,23 @@ function fetchArticles() {
     });
 }
 
-function onSearch(e) {
+async function onSearch(e) {
   e.preventDefault();
-  resetPage();
+  clearArticlesContainer();
   myQuery = e.currentTarget.elements.searchQuery.value;
-  fetchArticles()
-    .then(data => {
-      // console.log(data.hits, 'khgkhg');
-      if (!myQuery.trim()) {
-        alert(
-          'Sorry, there are no images matching your search query. Please try again'
-        );
-      }
-      return data;
-      // console.log('data.hits in onsearch :>> ', data.hits, 'data', data)
-    })
-    .then(createMarkup);
+  if (!myQuery.trim()) {
+    return alert(
+      'Sorry, there are no images matching your search query. Please try again'
+    );
+  }
+  // return data;
+  resetPage();
+  const a = await fetchArticles().then(createMarkup);
+  refs.buttonLM.style.display = 'block';
 }
 
 function createMarkup({ hits, totalHits }) {
+  // console.log('hits46', hits, totalHits);
   const markup = hits
     .map(
       ({
@@ -54,27 +53,28 @@ function createMarkup({ hits, totalHits }) {
         comments,
         downloads,
       }) => `
-    <div class="photo-card galery">
+    <div class="photo-card">
     <a href='${largeImageURL}'>
 <img  src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
  <p class="info-item">
-   <b>${likes}</b>
+   <b>Likes:${likes}</b>
   </p>
   <p class="info-item">
- <b>${views}</b>
+ <b>Views:${views}</b>
  </p>
  <p class="info-item">
- <b>${comments}</b>
+ <b>Commments:${comments}</b>
  </p>
  <p class="info-item">
- <b>${downloads}</b>
+ <b>Downloads:${downloads}</b>
 </p>
 </div>
 </a>
  </div> `
     )
     .join('');
+  refs.div.insertAdjacentHTML('beforeend', markup);
 }
 
 function resetPage() {
@@ -87,11 +87,12 @@ function incrementPage() {
 // console.log(Notify);
 function onLoadMore() {
   incrementPage();
-  fetchArticles().then(data =>
-    console.log('data.hits in loadmore :>> ', data.hits)
-  );
+  fetchArticles().then(createMarkup);
 }
 
+function clearArticlesContainer() {
+  refs.div.innerHTML = '';
+}
 // function createMarkup(data) {
 // console.log('in create markup ', data);
 // const markup = data.hits
