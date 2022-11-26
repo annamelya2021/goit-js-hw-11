@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { Notify } from 'notiflix';
 import axios from 'axios';
-import { searchHttpQuery } from './searchHttpQuery';
+// import { searchHttpQuery } from './searchHttpQuery';
 import { refs } from './refs';
 // import NewsApiService from './new-service';
 
@@ -15,7 +15,7 @@ let page = 1;
 let total = 0;
 refs.buttonLM.style.display = 'none';
 
-function fetchArticles() {
+async function fetchArticles() {
   return fetch(
     `https://pixabay.com/api/?key=12397794-3c79aefa4a299d9b97accc173&q=${myQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`
   )
@@ -30,7 +30,7 @@ function fetchArticles() {
         );
         refs.buttonLM.style.display = 'none';
       }
-      console.log(total);
+      // console.log(total);
       // console.log('data22', data);
       return data;
     });
@@ -95,7 +95,7 @@ function resetPage() {
 function incrementPage() {
   page += 1;
 }
-// console.log(Notify);
+
 function onLoadMore() {
   incrementPage();
   fetchArticles().then(createMarkup);
