@@ -1,30 +1,44 @@
-// export function renderCountryList(countries) {
-//   const markup = countries
-//     .map(({ name, flags }) => {
-//       return `
-//           <li class="country-list__item">
-//               <img class="country-list__flag" src="${flags.svg}" alt="Flag of ${name.official}" width = 30px height = 30px>
-//               <h2 class="country-list__name">${name.official}</h2>
-//           </li>
-//           `;
-//     })
-//     .join('');
-//   return markup;
-// }
+import { refs } from './refs';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
-// export function renderCountryInfo(countries) {
-//   const markup = countries
-//     .map(({ capital, population, languages }) => {
-//       return `
-//         <ul class="country-info__list">
-//             <li class="country-info__item"><p><b>Capital: </b>${capital}</p></li>
-//             <li class="country-info__item"><p><b>Population: </b>${population}</p></li>
-//             <li class="country-info__item"><p><b>Languages: </b>${Object.values(
-//               languages
-//             ).join(', ')}</p></li>
-//         </ul>
-//         `;
-//     })
-//     .join('');
-//   return markup;
-// }
+export function createMarkup({ hits }) {
+  const markup = hits
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => `
+    <div class="photo-card">
+    <a href='${largeImageURL}'>
+<img  src="${webformatURL}" alt="${tags}" loading="lazy" />
+  <div class="info">
+ <p class="info-item">
+   <b>Likes:<br>${likes}</b>
+  </p>
+  <p class="info-item">
+ <b>Views:<br>${views}</b>
+ </p>
+ <p class="info-item">
+ <b>Commments:<br>${comments}</b>
+ </p>
+ <p class="info-item">
+ <b>Downloads:<br>${downloads}</b>
+</p>
+</div>
+</a>
+ </div> `
+    )
+    .join('');
+  refs.div.insertAdjacentHTML('beforeend', markup);
+
+  new SimpleLightbox('.gallery a', {
+    captionDelay: 250,
+    fadeSpeed: 170,
+  });
+}
